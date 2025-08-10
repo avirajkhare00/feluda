@@ -66,7 +66,7 @@ cargo install feluda
 <details>
 <summary>Homebrew (maintained by <a href="https://github.com/chenrui333" rel="noopener noreferrer">@chenrui333</a>)</summary>
 
-![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0) 
+![macOS](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=macos&logoColor=F0F0F0)
 
 [feluda](https://formulae.brew.sh/formula/feluda) is available in the [Homebrew](https://formulae.brew.sh/).
 You can install it using brew:
@@ -92,9 +92,36 @@ paru -S feluda
 </details>
 
 <details>
+<summary>APT Repository (Debian/Ubuntu)</summary>
+
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) ![Debian](https://img.shields.io/badge/Debian-D70A53?style=for-the-badge&logo=debian&logoColor=white)
+
+Feluda is available via our official APT repository for Debian-based systems.
+
+```bash
+# Quick install (Ubuntu/Debian)
+# Note: Public key will be available after first release
+curl -fsSL https://anistark.github.io/feluda/apt-repo/public-key.gpg | sudo apt-key add -
+echo "deb [arch=amd64] https://anistark.github.io/feluda/apt-repo/ bionic main" | sudo tee /etc/apt/sources.list.d/feluda.list
+sudo apt update && sudo apt install feluda
+```
+
+**Alternative installation methods:**
+```bash
+# Using keyring (more secure)
+curl -fsSL https://anistark.github.io/feluda/apt-repo/public-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/feluda-archive-keyring.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/feluda-archive-keyring.gpg] https://anistark.github.io/feluda/apt-repo/ bionic main" | sudo tee /etc/apt/sources.list.d/feluda.list
+
+# Unsigned repository (if GPG verification fails)
+echo "deb [trusted=yes] https://anistark.github.io/feluda/apt-repo/ bionic main" | sudo tee /etc/apt/sources.list.d/feluda.list
+```
+
+</details>
+
+<details>
 <summary>NetBSD (maintained by <a href="https://github.com/0323pin" rel="noopener noreferrer">@0323pin</a>)</summary>
 
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black) 
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 
 On NetBSD a package is available from the [official repositories](https://pkgsrc.se/devel/feluda/). To install it, simply run:
 
@@ -202,7 +229,7 @@ A **NOTICE file** is a concise summary document that provides attribution for th
 
 - **Purpose**: Quick overview of all third-party components and their licenses
 - **Content**: Organized by license type, lists all dependencies with their versions
-- **Use Cases**: 
+- **Use Cases**:
   - Legal compliance documentation
   - Quick reference for license audits
   - Attribution requirements for many open source licenses
