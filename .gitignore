@@ -1,18 +1,3 @@
 target
 .DS_Store
 .vscode
-
-# APT repository build artifacts
-apt-repo/incoming/*.deb
-apt-repo/feluda_*_amd64/
-apt-repo/db/*
-!apt-repo/db/.gitkeep
-apt-repo/dists/*
-!apt-repo/dists/.gitkeep
-apt-repo/pool/*
-!apt-repo/pool/.gitkeep
-apt-repo/*.gpg
-apt-repo/Release*
-apt-repo/InRelease
-apt-repo/private.key
-apt-repo/gpg-key-config
