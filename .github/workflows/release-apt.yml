@@ -63,9 +63,8 @@ jobs:
           DESCRIPTION=$(grep '^description = ' Cargo.toml | cut -d'"' -f2)
           echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
 
-          # Extract maintainer info (use repository URL to construct email)
-          REPOSITORY=$(grep '^repository = ' Cargo.toml | cut -d'"' -f2)
-          MAINTAINER_EMAIL="feluda@$(echo $REPOSITORY | sed 's|https://github.com/||' | sed 's|/.*||').github.io"
+          # Extract maintainer info
+          MAINTAINER_EMAIL="anirudhastark@gmail.com is mine"
           echo "maintainer_email=$MAINTAINER_EMAIL" >> $GITHUB_OUTPUT
 
           echo "🚀 Building $PACKAGE_NAME version: $VERSION"
