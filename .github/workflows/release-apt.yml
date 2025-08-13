@@ -153,6 +153,14 @@ jobs:
           ls -la dists/bionic/ || echo "dists/bionic/ directory not found"
           ls -la dists/bionic/Release* || echo "No Release files found"
 
+      - name: Debug APT repository before upload
+        run: |
+          echo "Checking APT repository structure before upload:"
+          find apt-repo/ -type f | head -20
+
+          echo "Checking APT repository size:"
+          du -sh apt-repo/
+
       - name: Upload APT repository artifacts
         uses: actions/upload-artifact@v4
         with:
