@@ -71,6 +71,28 @@ jobs:
           echo "Description: $DESCRIPTION"
           echo "Maintainer: $MAINTAINER_EMAIL"
 
+      - name: Create APT repository structure
+        run: |
+          # Create APT repository directory structure
+          mkdir -p apt-repo/{conf,dists,pool,incoming,db}
+          mkdir -p apt-repo/dists/bionic/main/binary-amd64
+          mkdir -p apt-repo/pool/main/f/feluda
+
+      - name: Create reprepro configuration
+        run: |
+          # Create reprepro configuration
+          cat > apt-repo/conf/distributions << EOF
+          Codename: bionic
+          Suite: stable
+          Version: 18.04
+          Origin: Feluda APT Repository
+          Label: Feluda APT Repository
+          Description: Feluda CLI tool APT repository
+          Architectures: amd64
+          Components: main
+          SignWith: default
+          EOF
+
       - name: Create DEB package
         run: |
           cd apt-repo
@@ -131,18 +153,16 @@ jobs:
           ls -la dists/bionic/ || echo "dists/bionic/ directory not found"
           ls -la dists/bionic/Release* || echo "No Release files found"
 
-      - name: Commit and push changes
-        run: |
-          cd apt-repo
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -m "Add ${{ steps.package_info.outputs.package_name }} v${{ steps.package_info.outputs.version }} DEB package"
-          git push origin HEAD:main
+      - name: Upload APT repository artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: apt-repository
+          path: apt-repo/
+          retention-days: 30
 
       - name: Trigger GitHub Pages deployment
         run: |
-          echo "✅ APT repository updated. GitHub Pages will be deployed automatically."
+          echo "✅ APT repository artifacts uploaded. GitHub Pages will be deployed automatically."
 
       - name: Create Release Asset
         run: |

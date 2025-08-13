@@ -1,8 +1,0 @@
-Origin: Feluda
-Label: Feluda CLI Tool
-Suite: stable
-Codename: bionic
-Architectures: amd64
-Components: main
-Description: Feluda - A CLI tool to check dependency licenses
-SignWith: default

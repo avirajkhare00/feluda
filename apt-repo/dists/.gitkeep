@@ -1,2 +1,0 @@
-# This file ensures the dists directory is tracked by git
-# The directory will be populated by reprepro during package builds
