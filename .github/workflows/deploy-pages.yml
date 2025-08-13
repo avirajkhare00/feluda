@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
   workflow_run:
-    workflows: ["Build and Publish DEB Package"]
+    workflows: ["Build and Release APT Package"]
     types: [completed]
 
 permissions:

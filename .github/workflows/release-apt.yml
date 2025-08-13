@@ -110,6 +110,12 @@ jobs:
           echo "🔍 Checking GPG setup..."
           gpg --list-keys || echo "No GPG keys found"
 
+          # Initialize repository if needed
+          if [ ! -f "conf/distributions" ]; then
+            echo "Initializing APT repository..."
+            reprepro -V export
+          fi
+
           if [ -n "${{ secrets.GPG_PRIVATE_KEY }}" ]; then
             echo "🔐 Building signed repository..."
             reprepro -V --section utils --component main --priority optional includedeb bionic incoming/${{ steps.package_info.outputs.package_name }}_${{ steps.package_info.outputs.version }}_amd64.deb
@@ -120,6 +126,10 @@ jobs:
 
           echo "📁 Repository structure after build:"
           find . -name "*.gpg" -o -name "Release*" | head -10
+
+          echo "📋 Checking for Release file:"
+          ls -la dists/bionic/ || echo "dists/bionic/ directory not found"
+          ls -la dists/bionic/Release* || echo "No Release files found"
 
       - name: Commit and push changes
         run: |
