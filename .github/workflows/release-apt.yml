@@ -1,0 +1,131 @@
+name: Release APT Package
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-and-publish-apt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Build Feluda
+        run: |
+          cargo build --release
+          ls -la target/release/feluda
+
+      - name: Install reprepro
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y reprepro
+
+      - name: Setup GPG
+        run: |
+          if [ -n "${{ secrets.GPG_PRIVATE_KEY }}" ]; then
+            echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --import
+            if [ -n "${{ secrets.GPG_PASSPHRASE }}" ]; then
+              echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --yes --passphrase-fd 0 --export-secret-key > private.key
+              gpg --import private.key
+            fi
+            echo "✅ GPG key imported successfully"
+            gpg --list-keys
+          else
+            echo "⚠️ No GPG_PRIVATE_KEY secret found - repository will not be signed"
+            echo "Creating unsigned repository..."
+          fi
+
+      - name: Extract version from release
+        id: version
+        run: |
+          # Extract version from release tag (remove 'v' prefix if present)
+          VERSION="${GITHUB_REF#refs/tags/}"
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building Feluda version: $VERSION"
+
+      - name: Create DEB package
+        run: |
+          cd apt-repo
+
+          # Create package structure
+          mkdir -p feluda_${{ steps.version.outputs.version }}_amd64/DEBIAN
+          mkdir -p feluda_${{ steps.version.outputs.version }}_amd64/usr/local/bin
+
+          # Copy binary
+          cp ../target/release/feluda feluda_${{ steps.version.outputs.version }}_amd64/usr/local/bin/
+          chmod +x feluda_${{ steps.version.outputs.version }}_amd64/usr/local/bin/feluda
+
+          # Create control file
+          cat > feluda_${{ steps.version.outputs.version }}_amd64/DEBIAN/control << EOF
+          Package: feluda
+          Version: ${{ steps.version.outputs.version }}
+          Section: utils
+          Priority: optional
+          Architecture: amd64
+          Depends: libc6
+          Maintainer: Feluda Team <feluda@example.com>
+          Description: A CLI tool to check dependency licenses
+           Feluda analyzes project dependencies, notes their licenses,
+           and flags any permissions that restrict personal or commercial usage
+           or are incompatible with your project's license.
+          EOF
+
+          # Build DEB package
+          dpkg-deb --build feluda_${{ steps.version.outputs.version }}_amd64
+
+          # Move to incoming directory
+          mv feluda_${{ steps.version.outputs.version }}_amd64.deb incoming/
+
+      - name: Update APT repository
+        run: |
+          cd apt-repo
+          echo "🔍 Checking GPG setup..."
+          gpg --list-keys || echo "No GPG keys found"
+
+          if [ -n "${{ secrets.GPG_PRIVATE_KEY }}" ]; then
+            echo "🔐 Building signed repository..."
+            reprepro -V --section utils --component main --priority optional includedeb bionic incoming/feluda_${{ steps.version.outputs.version }}_amd64.deb
+          else
+            echo "⚠️ Building unsigned repository..."
+            reprepro -V --section utils --component main --priority optional --nosign includedeb bionic incoming/feluda_${{ steps.version.outputs.version }}_amd64.deb
+          fi
+
+          echo "📁 Repository structure after build:"
+          find . -name "*.gpg" -o -name "Release*" | head -10
+
+      - name: Commit and push changes
+        run: |
+          cd apt-repo
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Add Feluda v${{ steps.version.outputs.version }} DEB package"
+          git remote set-url origin https://x-access-token:${{ secrets.REPO_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+          git push origin main
+
+      - name: Trigger GitHub Pages deployment
+        run: |
+          echo "✅ APT repository updated. GitHub Pages will be deployed automatically."
+
+      - name: Create Release Asset
+        run: |
+          # Copy the DEB package to the release assets
+          cp apt-repo/incoming/feluda_${{ steps.version.outputs.version }}_amd64.deb feluda_${{ steps.version.outputs.version }}_amd64.deb
+
+          # Upload as release asset
+          gh release upload ${{ github.ref }} feluda_${{ steps.version.outputs.version }}_amd64.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
