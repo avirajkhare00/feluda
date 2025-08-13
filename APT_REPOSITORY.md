@@ -18,15 +18,14 @@ feluda/
 │   ├── db/                  # reprepro database
 │   └── README.md            # Installation instructions
 ├── .github/workflows/       # GitHub Actions
-│   ├── release-apt.yml      # Automatic release workflow
-│   ├── build-deb.yml        # Manual build workflow
+│   ├── release-apt.yml      # Automated APT package build
 │   └── deploy-pages.yml     # GitHub Pages deployment
 └── ...                      # Main Feluda source code
 ```
 
 ## GitHub Actions Workflows
 
-### 1. Automatic Release Workflow (`release-apt.yml`)
+### 1. Automated APT Package Build (`release-apt.yml`)
 
 **Trigger**: When a new GitHub release is published
 **Purpose**: Automatically builds and publishes APT packages
@@ -37,19 +36,14 @@ feluda/
 3. Build Feluda binary
 4. Install reprepro (APT repository management tool)
 5. Setup GPG signing (if configured)
-6. Extract version from release tag
+6. Extract package info from Cargo.toml and version from release tag
 7. Create DEB package
 8. Update APT repository
 9. Export and save public key
 10. Commit and push changes
 11. Upload DEB package as release asset
 
-### 2. Manual Build Workflow (`build-deb.yml`)
-
-**Trigger**: Manual workflow dispatch or repository dispatch
-**Purpose**: Manual APT package builds for testing or specific versions
-
-### 3. GitHub Pages Deployment (`deploy-pages.yml`)
+### 2. GitHub Pages Deployment (`deploy-pages.yml`)
 
 **Trigger**: On push to main branch or after APT package builds
 **Purpose**: Deploy APT repository to GitHub Pages for public access
@@ -147,7 +141,7 @@ Enable GitHub Pages for the repository:
 
 ## Release Process
 
-### Automatic Release (Recommended)
+### Automated Release
 
 1. Create a new release on GitHub:
    - Go to Releases → Create a new release
@@ -157,19 +151,14 @@ Enable GitHub Pages for the repository:
    - Publish release
 
 2. The `release-apt.yml` workflow will automatically:
+   - Extract version from the release tag
+   - Extract package info from Cargo.toml
    - Build the Feluda binary
    - Create a DEB package
    - Update the APT repository
    - Export and save the public key
    - Deploy to GitHub Pages
    - Add the DEB package as a release asset
-
-### Manual Release
-
-1. Go to Actions → "Build and Publish DEB Package"
-2. Click "Run workflow"
-3. Enter the version number
-4. Click "Run workflow"
 
 ## Installation for Users
 

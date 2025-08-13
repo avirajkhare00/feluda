@@ -75,7 +75,7 @@ feluda generate
 
 To build new packages:
 1. Create a new release on GitHub (this will automatically trigger the APT package build)
-2. Or manually trigger the workflow: Go to Actions → "Build and Publish DEB Package" → Enter version number and run workflow
+2. The workflow will automatically extract the version from the release tag and package info from Cargo.toml
 
 For setup instructions, see [APT_REPOSITORY.md](../APT_REPOSITORY.md) in the main repository.
 
