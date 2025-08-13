@@ -67,9 +67,9 @@ jobs:
           MAINTAINER_EMAIL="feluda@anirudha.dev"
           echo "maintainer_email=$MAINTAINER_EMAIL" >> $GITHUB_OUTPUT
 
-          echo "🚀 Building $PACKAGE_NAME version: $VERSION"
-          echo "📝 Description: $DESCRIPTION"
-          echo "👤 Maintainer: $MAINTAINER_EMAIL"
+          echo "Building $PACKAGE_NAME version: $VERSION"
+          echo "Description: $DESCRIPTION"
+          echo "Maintainer: $MAINTAINER_EMAIL"
 
       - name: Create DEB package
         run: |
