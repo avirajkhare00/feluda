@@ -128,14 +128,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add .
           git commit -m "Add ${{ steps.package_info.outputs.package_name }} v${{ steps.package_info.outputs.version }} DEB package"
-          git remote set-url origin https://x-access-token:${{ secrets.REPO_ACCESS_TOKEN }}@github.com/${{ github.repository }}
-
-          # Get the current branch name
-          CURRENT_BRANCH=$(git branch --show-current)
-          echo "Current branch: $CURRENT_BRANCH"
-
-          # Push to the current branch
-          git push origin $CURRENT_BRANCH
+          git push origin HEAD:main
 
       - name: Trigger GitHub Pages deployment
         run: |
