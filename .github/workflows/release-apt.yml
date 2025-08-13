@@ -56,11 +56,11 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
           # Extract package name from Cargo.toml
-          PACKAGE_NAME=$(grep '^name = ' Cargo.toml | cut -d'"' -f2)
+          PACKAGE_NAME=feluda
           echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
 
           # Extract description from Cargo.toml
-          DESCRIPTION=$(grep '^description = ' Cargo.toml | cut -d'"' -f2)
+          DESCRIPTION="A CLI tool to check dependency licenses."
           echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
 
           # Extract maintainer info
