@@ -47,7 +47,7 @@ jobs:
             echo "Creating unsigned repository..."
           fi
 
-            - name: Extract package info from Cargo.toml and release tag
+      - name: Extract package info from Cargo.toml and release tag
         id: package_info
         run: |
           # Extract version from release tag (remove 'v' prefix if present)
@@ -138,10 +138,10 @@ jobs:
 
       - name: Create Release Asset
         run: |
-                    # Copy the DEB package to the release assets
+          # Copy the DEB package to the release assets
           cp apt-repo/incoming/${{ steps.package_info.outputs.package_name }}_${{ steps.package_info.outputs.version }}_amd64.deb ${{ steps.package_info.outputs.package_name }}_${{ steps.package_info.outputs.version }}_amd64.deb
 
           # Upload as release asset
-          gh release upload ${{ github.ref }} ${{ steps.package_info.outputs.package_name }}_${{ steps.package_info.outputs.version }}_amd64.deb
+          gh release upload ${{ github.event.release.tag_name }} ${{ steps.package_info.outputs.package_name }}_${{ steps.package_info.outputs.version }}_amd64.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
