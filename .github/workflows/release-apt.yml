@@ -156,6 +156,32 @@ jobs:
           ls -la dists/bionic/ || echo "dists/bionic/ directory not found"
           ls -la dists/bionic/Release* || echo "No Release files found"
 
+      - name: Export and save public key
+        run: |
+          cd apt-repo
+
+          # Get the GPG key fingerprint
+          KEY_FINGERPRINT=$(gpg --list-keys --with-colons | grep "^fpr:" | head -1 | cut -d: -f10)
+
+          if [ -n "$KEY_FINGERPRINT" ]; then
+            echo "Exporting public key with fingerprint: $KEY_FINGERPRINT"
+
+            # Export public key
+            gpg --armor --export "$KEY_FINGERPRINT" > public-key.gpg
+
+            echo "✅ Public key exported successfully"
+            echo "Public key fingerprint:"
+            gpg --fingerprint "$KEY_FINGERPRINT"
+
+            # Show the public key file
+            ls -la public-key.gpg
+          else
+            echo "⚠️ No GPG key found, creating placeholder public key"
+            echo "-----BEGIN PGP PUBLIC KEY BLOCK-----" > public-key.gpg
+            echo "Comment: Placeholder key - packages are unsigned" >> public-key.gpg
+            echo "-----END PGP PUBLIC KEY BLOCK-----" >> public-key.gpg
+          fi
+
       - name: Debug APT repository before upload
         run: |
           echo "Checking APT repository structure before upload:"
