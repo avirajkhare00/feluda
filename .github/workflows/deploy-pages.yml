@@ -1,9 +1,9 @@
 name: Deploy APT Repository to GitHub Pages
 
 on:
-  workflow_run:
-    workflows: ["Build and Release APT Package"]
-    types: [completed]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [deploy-apt-repo]
 
 permissions:
   contents: read
@@ -21,7 +21,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
     steps:
       - name: Download APT repository artifacts
         uses: actions/download-artifact@v4

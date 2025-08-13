@@ -170,7 +170,8 @@ jobs:
 
       - name: Trigger GitHub Pages deployment
         run: |
-          echo "✅ APT repository artifacts uploaded. GitHub Pages will be deployed automatically."
+          echo "✅ APT repository artifacts uploaded. Triggering GitHub Pages deployment..."
+          gh workflow run deploy-pages.yml --ref main
 
       - name: Create Release Asset
         run: |
