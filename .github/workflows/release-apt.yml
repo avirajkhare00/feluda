@@ -7,6 +7,9 @@ on:
 permissions:
   contents: write
   packages: write
+  actions: write
+  pages: write
+  id-token: write
 
 jobs:
   build-apt-package:
@@ -168,10 +171,17 @@ jobs:
           path: apt-repo/
           retention-days: 30
 
-      - name: Trigger GitHub Pages deployment
-        run: |
-          echo "✅ APT repository artifacts uploaded. Triggering GitHub Pages deployment..."
-          gh workflow run deploy-pages.yml --ref main
+      - name: Deploy to GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './apt-repo'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
         env:
           GH_TOKEN: ${{ github.token }}
 
