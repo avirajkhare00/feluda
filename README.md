@@ -96,7 +96,7 @@ paru -S feluda
 
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) ![Debian](https://img.shields.io/badge/Debian-D70A53?style=for-the-badge&logo=debian&logoColor=white)
 
-Feluda is available via our official APT repository for Debian-based systems. See [apt-repo/README.md](apt-repo/README.md) for detailed installation instructions.
+Feluda is available via our official APT repository for Debian-based systems.
 
 ```bash
 # Quick install (Ubuntu/Debian)
@@ -104,6 +104,16 @@ Feluda is available via our official APT repository for Debian-based systems. Se
 curl -fsSL https://anistark.github.io/feluda/apt-repo/public-key.gpg | sudo apt-key add -
 echo "deb [arch=amd64] https://anistark.github.io/feluda/apt-repo/ bionic main" | sudo tee /etc/apt/sources.list.d/feluda.list
 sudo apt update && sudo apt install feluda
+```
+
+**Alternative installation methods:**
+```bash
+# Using keyring (more secure)
+curl -fsSL https://anistark.github.io/feluda/apt-repo/public-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/feluda-archive-keyring.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/feluda-archive-keyring.gpg] https://anistark.github.io/feluda/apt-repo/ bionic main" | sudo tee /etc/apt/sources.list.d/feluda.list
+
+# Unsigned repository (if GPG verification fails)
+echo "deb [trusted=yes] https://anistark.github.io/feluda/apt-repo/ bionic main" | sudo tee /etc/apt/sources.list.d/feluda.list
 ```
 
 </details>
