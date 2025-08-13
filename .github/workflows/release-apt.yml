@@ -143,4 +143,4 @@ jobs:
           # Upload as release asset
           gh release upload ${{ github.event.release.tag_name }} ${{ steps.package_info.outputs.package_name }}_${{ steps.package_info.outputs.version }}_amd64.deb
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
