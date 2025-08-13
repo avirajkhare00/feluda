@@ -64,7 +64,7 @@ jobs:
           echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
 
           # Extract maintainer info
-          MAINTAINER_EMAIL="anirudhastark@gmail.com is mine"
+          MAINTAINER_EMAIL="feluda@anirudha.dev"
           echo "maintainer_email=$MAINTAINER_EMAIL" >> $GITHUB_OUTPUT
 
           echo "🚀 Building $PACKAGE_NAME version: $VERSION"
