@@ -92,28 +92,21 @@ paru -S feluda
 </details>
 
 <details>
-<summary>APT Repository (Debian/Ubuntu)</summary>
+<summary>DEB Package (Debian/Ubuntu)</summary>
 
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white) ![Debian](https://img.shields.io/badge/Debian-D70A53?style=for-the-badge&logo=debian&logoColor=white)
 
-Feluda is available via our official APT repository for Debian-based systems.
+Feluda is available as a DEB package for Debian-based systems. Download the latest release from [GitHub Releases](https://github.com/anistark/feluda/releases).
 
 ```bash
-# Quick install (Ubuntu/Debian)
-# Note: Public key will be available after first release
-curl -fsSL https://anistark.github.io/feluda/apt-repo/public-key.gpg | sudo apt-key add -
-echo "deb [arch=amd64] https://anistark.github.io/feluda/apt-repo/ bionic main" | sudo tee /etc/apt/sources.list.d/feluda.list
-sudo apt update && sudo apt install feluda
-```
+# Download the latest DEB package
+wget https://github.com/anistark/feluda/releases/latest/download/feluda_$(curl -s https://api.github.com/repos/anistark/feluda/releases/latest | grep -o '"tag_name": "v[^"]*"' | cut -d'"' -f4 | sed 's/v//')_amd64.deb
 
-**Alternative installation methods:**
-```bash
-# Using keyring (more secure)
-curl -fsSL https://anistark.github.io/feluda/apt-repo/public-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/feluda-archive-keyring.gpg
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/feluda-archive-keyring.gpg] https://anistark.github.io/feluda/apt-repo/ bionic main" | sudo tee /etc/apt/sources.list.d/feluda.list
+# Install using dpkg
+sudo dpkg -i feluda_*.deb
 
-# Unsigned repository (if GPG verification fails)
-echo "deb [trusted=yes] https://anistark.github.io/feluda/apt-repo/ bionic main" | sudo tee /etc/apt/sources.list.d/feluda.list
+# If there are dependency issues, fix them
+sudo apt install -f
 ```
 
 </details>
