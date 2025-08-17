@@ -1,0 +1,35 @@
+name: Build DEB Package
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-deb-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Install cargo-deb
+        run: cargo install cargo-deb
+
+      - name: Build DEB package
+        run: cargo deb
+
+      - name: Upload DEB package as release asset
+        run: |
+          DEB_FILE=$(find target/debian -name "*.deb")
+          gh release upload ${{ github.event.release.tag_name }} "$DEB_FILE"
+        env:
+          GITHUB_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
